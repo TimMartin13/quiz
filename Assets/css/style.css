@@ -1,0 +1,84 @@
+a {
+    font-size: 20px;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+#timer {
+    float: right;
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: bold; 
+}
+
+.container {
+    max-width: 700px;
+    text-align: center;
+    margin: auto;
+    margin-top: 70px;
+
+}
+
+h1 {
+    margin: 10px;
+    padding: 10px;
+    background-color: blueviolet;
+}
+
+p {
+    justify-content: center;
+    margin: auto;
+    max-width: 500px;
+    font-size: 18px;
+    /* background-color: pink; */
+}
+
+.startBtn {
+    margin-top: 40px;
+    width: 100px;
+    height: 50px;
+    background-color: rgb(65, 64, 65);
+    color: white;
+}
+
+.choice {
+    text-align: left;
+    font-weight: bold; 
+    padding: 10px 15px; 
+    background-color: pink; 
+    display: block; 
+    margin: 10px; 
+    border-radius: 5px;
+}
+
+#confirm {
+    font-style: italic; 
+    font-size: 24px; 
+    color: purple; 
+    border-top: 2px solid grey; 
+    text-align: left; 
+    padding: 20px; 
+    margin: 20px;
+}
+
+#score {
+    font-size: 20px;
+    padding: 20px 0px;
+    font-weight: normal;
+}
+
+#initials {
+    float: left;
+    padding-top: 2px;
+    font-size: 20px;
+    font-weight: normal;
+    /* margin-top: 20px; */
+}
+
+#textBox {
+    margin-left: 10px; 
+}
+
+#submit {
+    margin-left: 10px;
+}
