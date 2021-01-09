@@ -4,9 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Highscores</title>
+    <link rel="stylesheet" href="./Assets/css/style.css">
 </head>
 <body>
-    <h1>This is the highscores page.</h1>
-    <a href="./index.html">Back</a>
+    <!-- Container for the high scores -->
+    <main class="hs-container">
+        <!-- Table to hold the scores -->
+        <table id="highscores">
+            <tr>
+                <!-- Table title -->
+                <th id="hs-title" colspan="2">Highscores</th>
+            </tr>
+            <tr>
+                <!-- Column headers -->
+                <th class="hs-header">Initials</th>
+                <th class="hs-header">Score</th>
+            </tr>
+        </table>
+        <!-- Buttons -->
+        <div id="hs-buttons">
+            <!-- This button takes you back to the main page -->
+            <a href="./index.html">
+                <button class="startBtn hs-back">Back</button>
+            </a>
+            <!-- Clear the local storage -->
+            <button class="startBtn" id="clear">Clear</button>
+        </div>
+    </main>
+    <!-- My JavaScript for the highscores page -->
+    <script src="./Assets/js/highscores.js"></script>
 </body>
 </html>

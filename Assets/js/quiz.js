@@ -4,39 +4,27 @@ var introParagraph = document.querySelector("#introParagraph");
 var startQuiz = document.querySelector(".startBtn");
 var options = document.querySelector("#choices");
 
-var myQuiz = [
-    {
-        question: "How much wood can a woodchuck chuck if a woodchuck could chuck wood?",
-        choices: ["Choice 1", "Choice 2", "Choice 3", "Choice 4"],
-        answer: "1"
-    },
-    {
-        question: "Question 2?",
-        choices: ["Choice 2", "Choice 3", "Choice 4", "Choice 1"],
-        answer: "2"
-    },
-    {
-        question: "Question 3?",
-        choices: ["Choice 3", "Choice 4", "Choice 2", "Choice 1"],
-        answer: "3"
-    },
-    {
-        question: "Question 4?",
-        choices: ["Choice 4", "Choice 1", "Choice 2", "Choice 3"],
-        answer: "4"
-    }
-];
+var newTextBox = document.createElement("input");
+var submitButton = document.createElement("button");
 
+// To keep track of which question/answer
 var index = 0;
+
 var timeLeft = 90;
 var score = 0;
-var stopTimer = false;
+// Local storage array
+var storedScores = [];
 
+// Flag set if all questions answered before timer runs out
+var stopTimer = false;
+// Initial state of page
 function init() {
-    questions.textContent = "Coding Quiz Challenge";
+    // Title
+    questions.textContent = "Know your scientists!";
+    // Introduction paragraph
     introParagraph.textContent = "Try to answer the following code-related questions within the time limit.  Keep in mind that incorrect answers will penalize your score/time by ten seconds!"
 }
-
+// Timer function
 function startTimer(event) {
     event.preventDefault();
     // Grab the frist question/choices
@@ -53,10 +41,15 @@ function startTimer(event) {
         if (timeLeft < 10 && timeLeft > 0) {
             timer.setAttribute("style", "color: red; font-weight: bold;")
         }    
+        // Game over if timer runs out or all questions are answered
         else if (timeLeft === 0 || stopTimer) {
+            // Stop the timer
             clearInterval(timeInterval);
+            // If game stopped because the user answered all of the questions
             if(!stopTimer) {
+                // Clear the questions/answers
                 clearOptions();
+                // Run gameover function
                 gameOver();
             }    
         }
@@ -64,7 +57,7 @@ function startTimer(event) {
 
     }, 1000);
 } 
-
+// Function to remove answers to prepare for the next question
 function clearOptions() {
     while (options.firstChild) {
         options.removeChild(options.firstChild);
@@ -79,14 +72,18 @@ function cycleQuestions() {
         clearOptions();
     }
     // If game not over yet
-    if (index <= myQuiz.length - 1) {     
-        console.log(myQuiz[index].question);
+    if (index <= myQuiz.length - 1 && timeLeft > 0) {
+        // Ask the next question     
         questions.textContent = myQuiz[index].question;
-        
+        // Populate the question/answer choices
         for (var i = 0; i < myQuiz[index].choices.length; i++) {
+            // Create a new button for each answer
             var newBtn = document.createElement("button");
+            // Append it to the div
             options.appendChild(newBtn);
+            // Populate the text
             newBtn.textContent = myQuiz[index].choices[i];
+            // Add a class and data-number to get the answer
             newBtn.setAttribute("class", "choice");
             newBtn.setAttribute("data-number", i + 1);
         }
@@ -96,9 +93,11 @@ function cycleQuestions() {
     }  
 }
 
+// Game over function
 function gameOver() {
     // Stop timer
     stopTimer = true;
+    // Add time left to score
     score += timeLeft;
     // All done text
     questions.textContent = "All Done!";
@@ -113,55 +112,87 @@ function gameOver() {
     initialsDiv.setAttribute("id", "initials");
     questions.appendChild(initialsDiv);
     initialsDiv.textContent = "Enter initials: "; 
-    // Textbox to enter initials
-    var newTextBox = document.createElement("input");
+
+    // Textbox to enter initials (Global so the submit button listener can access it)
+    // var newTextBox = document.createElement("input");
     newTextBox.setAttribute("id", "textBox");
     newTextBox.setAttribute("type", "text");
     questions.appendChild(newTextBox);
-    // Submit button
-    var newButton = document.createElement("button");
-    newButton.setAttribute("id", "submit");
-    newButton.setAttribute("type", "button");
-    questions.appendChild(newButton);
-    newButton.textContent = "Submit";
+    // Submit button (Global so the submit button listener can access it)
+    // var submitButton = document.createElement("button");
+    submitButton.setAttribute("id", "submit");
+    submitButton.setAttribute("type", "button");
+    questions.appendChild(submitButton);
+    submitButton.textContent = "Submit";
+}
+
+// Function to submit the users initials and score
+submitButton.addEventListener("click", function(event) {
+    // Get the initials from the user
+    var topScores = JSON.parse(localStorage.getItem("topScores"));
+    var initials = document.querySelector("#textBox").value.trim();
     
-    // localStorage.setItem("record", record);
+    // Put current information into an object
+    var highscore = {
+        initials: initials,
+        score: score
+    };
+    // If there are previous topScores
+    if (topScores !== null) {
+        // Push highscore to the back
+        topScores.push(highscore);
+        // Put the entire thing into a new array
+        storedScores = topScores;
+        // Sort the array (high score to low score)
+        storedScores.sort(function(a, b){
+            return b.score - a.score;
+        });
+    }
+    // First run with no topScores
+    else {
+        // Put the object directly into the array
+        storedScores.push(highscore);
+    }
+    // Store the array locally
+    localStorage.setItem("topScores", JSON.stringify(storedScores));
+    // Go to the highscores page
+    location.href = "./highscores.html"
+ });
 
-    // Text box 
-        // Enter Initials - submit button
-        // store initials and highscore in a local storage array
-        // highscores()
-}
 
-function highscores() {
-    // Go to highscores page
-}
 // Listen for answer clicks
 options.addEventListener("click", function(event) {
     var element = event.target;
-    console.log(event.target);
-
+    // Ensure that the user clicked on a choice
     if (element.matches(".choice")) {
+        // Get the button the user clicked
         var state = element.getAttribute("data-number");
         var newDiv = document.createElement("div");
         newDiv.setAttribute("id", "confirm");
         options.appendChild(newDiv);
-
+        // If the button matches the answer
         if (state == myQuiz[index].answer) {
-          score += 5;
-          newDiv.textContent = "Correct!";
-          console.log(newDiv.textContent);
+            // Add five to score
+            score += 5;
+            // Display correct text at the bottom of the div
+            newDiv.textContent = "Correct!";
         }
         else {
-          timeLeft -= 10;
-          if (timeLeft < 0) {
-              timeLeft = 0;
-          }
-          newDiv.textContent = "Wrong!";
-          console.log(newDiv.textContent);
+            // Wrong answers have a time penalty
+            timeLeft -= 10;
+            if (timeLeft < 0) {
+                timeLeft = 0;
+            }
+            // Display wrong text at the bottom of the div
+            newDiv.textContent = "Wrong!";
         }
-        index++;
-        setTimeout(cycleQuestions, 1000);
+        // If there is time left, got to next question
+        if (timeLeft > 0) {
+            index++;
+            // stall a second to show correct/wrong text
+            setTimeout(cycleQuestions, 1000);
+        }
+        
     }
 });
 
@@ -171,18 +202,6 @@ init();
 
 // Start Quiz button
 startQuiz.addEventListener("click", startTimer);
-
-
-
-        // When gameOver
-            // have user enter initials
-            // add it to local storage
-            // add score to local storage
-
-
-
-
-    // highscores.html
     
     
 
